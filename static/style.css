@@ -1,0 +1,109 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: #181818;
+    color: #ccc;
+}
+
+#aiContainer {
+    display: flex;
+    height: 100%;
+}
+
+.ai {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #202020;
+}
+
+.ai-header {
+    padding: 25px;
+    background-color: #252525;
+    color: #fff;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-bottom: 3px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.chat-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #2a2a2a, #1f1f1f);
+}
+
+.chat-area::-webkit-scrollbar {
+    display: none;
+}
+
+.chat-area {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.chat-bubble {
+    background-color: #333;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+    max-width: 85%;
+    word-wrap: break-word;
+    font-size: 1.2em;
+    color: #eaeaea;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.ai1-bubble {
+    align-self: flex-start;
+    border-top-right-radius: 0;
+}
+
+.ai2-bubble {
+    align-self: flex-end;
+    border-top-left-radius: 0;
+}
+
+.ai-footer {
+    padding: 20px;
+    background-color: #252525;
+    color: #fff;
+    text-align: center;
+    font-size: 1.2em;
+    border-top: 3px solid #333;
+}
+
+@media (max-width: 768px) {
+    #aiContainer {
+        flex-direction: column;
+    }
+
+    .ai-header, .ai-footer {
+        font-size: 1.3em;
+    }
+}
+
+

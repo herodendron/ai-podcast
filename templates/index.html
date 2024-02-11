@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta viewport="width=device-width, initial-scale=1.0">
+    <title>AI Podcast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="aiContainer">
+        <section id="ai1" class="ai">
+            <header class="ai-header">
+                <img src="{{ ai1_pic }}" alt="Nick Wilde Icon" class="ai-icon">
+                {{ ai1_name }}
+            </header>
+            <div class="chat-area" id="chatAI1">
+                <!-- Example message
+                <div class="chat-bubble ai1-bubble">
+                    Hey there
+                </div>
+                -->
+            </div>
+            <footer class="ai-footer">Waiting...</footer>
+        </section>
+        <section id="ai2" class="ai">
+            <header class="ai-header">
+                <img src="{{ ai2_pic }}" alt="Assistant Icon" class="ai-icon">
+                {{ ai2_name }}
+            </header>
+            <div class="chat-area" id="chatAI2">
+                <!-- Example message
+                <div class="chat-bubble ai2-bubble">
+                    How's it going?
+                </div>
+                -->
+            </div>
+            <footer class="ai-footer">Waiting...</footer>
+        </section>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+                socket.on('connect', () => {
+                    console.log('Connected to the server');
+                });
+
+                let currentBubbleAI1 = null;
+                let currentBubbleAI2 = null;
+
+                socket.on('ai_message', data => {
+                    if (data.ai1_partial_response) {
+                        if (!currentBubbleAI1) {
+                            currentBubbleAI1 = createBubble('ai1');
+                        }
+                        currentBubbleAI1.textContent += data.ai1_partial_response;
+                    }
+                    if (data.ai2_partial_response) {
+                        if (!currentBubbleAI2) {
+                            currentBubbleAI2 = createBubble('ai2');
+                        }
+                        currentBubbleAI2.textContent += data.ai2_partial_response;
+                    }
+                    if (data.ai1_response_end) {
+                        currentBubbleAI1 = null;
+                    }
+                    if (data.ai2_response_end) {
+                        currentBubbleAI2 = null;
+                    }
+                });
+
+                socket.on('ai_state', data => {
+                    updateAIState(data.ai_id, data.state);
+                });
+
+                function updateAIState(aiId, state) {
+                    const footer = document.getElementById(aiId).querySelector('.ai-footer');
+                    if (footer) {
+                        footer.textContent = state + '...';  //listening, talking
+                    }
+                }
+
+                socket.on('disconnect', () => {
+                    console.error('Disconnected from the server');
+                });
+
+                function appendToConversation(message, aiId) {
+                    const chatArea = document.getElementById('chat' + aiId.toUpperCase());
+                    if (!chatArea) return;
+
+                    const newBubble = document.createElement('div');
+                    newBubble.className = 'chat-bubble ' + aiId + '-bubble';
+                    newBubble.textContent = message;
+                    chatArea.appendChild(newBubble);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                }
+
+                function createBubble(aiId) {
+                    const chatArea = document.getElementById('chat' + aiId.toUpperCase());
+                    const newBubble = document.createElement('div');
+                    newBubble.className = 'chat-bubble ' + aiId + '-bubble';
+                    chatArea.appendChild(newBubble);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                    return newBubble;
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
